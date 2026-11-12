@@ -1,7 +1,7 @@
 """Asynchronous direct-serial (USB/COM) connection for Elero devices.
 
 This module implements :class:`SerialConnection`, a concrete :class:`Connection`
-that opens a serial port using ``serial_asyncio`` and exposes the common
+that opens a serial port using ``serial_asyncio_fast`` and exposes the common
 send/receive interface shared by the integration.
 
 Configuration is provided via :class:`~custom_components.elero.connection.config.SerialConfig`:
@@ -16,7 +16,7 @@ Only docstrings were added; functional behavior is unchanged.
 
 import logging
 
-import serial_asyncio
+import serial_asyncio_fast
 from serial import SerialException
 
 from custom_components.elero.connection.config import SerialConfig
@@ -43,7 +43,7 @@ class SerialConnection(Connection):
         self._reader = None
 
     async def open_connection(self) -> None:
-        """Open the serial connection using ``serial_asyncio``.
+        """Open the serial connection using ``serial_asyncio_fast``.
 
         On success, the internal reader/writer streams are populated. Errors
         from the OS or the serial layer are logged and re-raised.
@@ -51,7 +51,7 @@ class SerialConnection(Connection):
         if not self.is_open():
             _LOGGER.debug("Opening serial connection to %s", self._port_name)
             try:
-                reader, writer = await serial_asyncio.open_serial_connection(
+                reader, writer = await serial_asyncio_fast.open_serial_connection(
                     url=self._serial_config.device,
                     baudrate=self._serial_config.baudrate,
                     bytesize=self._serial_config.bytesize,
